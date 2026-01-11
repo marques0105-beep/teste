@@ -6,6 +6,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.Intersection;
 import model.Vehicle;
+import model.TrafficLight;
 import model.EmergencyVehicle;
 
 public class CanvasView extends Canvas {
@@ -24,6 +25,7 @@ public class CanvasView extends Canvas {
 
         drawBackground();
         drawRoad();
+        drawCrosswalks();
         drawTrafficLights();
         drawVehicles();
         drawStats();
@@ -33,9 +35,6 @@ public class CanvasView extends Canvas {
     // 🌤️ FUNDO
     // =========================
     private void drawBackground() {
-        // céu
-        gc.setFill(Color.rgb(220, 235, 250));
-        gc.fillRect(0, 0, 800, 170);
 
         // chão
         gc.setFill(Color.rgb(200, 220, 200));
@@ -47,16 +46,46 @@ public class CanvasView extends Canvas {
     // =========================
     private void drawRoad() {
 
-        gc.setFill(Color.rgb(160, 160, 160));
-        gc.fillRoundRect(0, 180, 800, 60, 30, 30);
+        // fundo
+        gc.setFill(Color.rgb(60, 120, 60));
+        gc.fillRect(0, 0, 800, 400);
 
-        gc.setStroke(Color.rgb(110, 110, 110));
-        gc.strokeRoundRect(0, 180, 800, 60, 30, 30);
+        // estrada vertical
+        gc.setFill(Color.rgb(150, 150, 150));
+        gc.fillRect(360, 0, 80, 400);
 
-        // faixa central
+        // estrada horizontal
+        gc.fillRect(0, 160, 800, 80);
+
+        // faixas centrais
         gc.setFill(Color.WHITE);
-        for (int x = 20; x < 800; x += 40) {
-            gc.fillRect(x, 208, 20, 4);
+
+        // vertical
+        for (int y = 10; y < 400; y += 40) {
+            gc.fillRect(398, y, 4, 20);
+        }
+
+        // horizontal
+        for (int x = 10; x < 800; x += 40) {
+            gc.fillRect(x, 198, 20, 4);
+        }
+    }
+
+    /* ================= CROSSWALKS ================= */
+
+    private void drawCrosswalks() {
+        gc.setFill(Color.WHITE);
+
+        // horizontal crosswalks
+        for (int i = 0; i < 5; i++) {
+            gc.fillRect(350 + i * 15, 155, 10, 30);
+            gc.fillRect(350 + i * 15, 215, 10, 30);
+        }
+
+        // vertical crosswalks
+        for (int i = 0; i < 5; i++) {
+            gc.fillRect(355, 180 + i * 15, 30, 10);
+            gc.fillRect(415, 180 + i * 15, 30, 10);
         }
     }
 
@@ -70,8 +99,16 @@ public class CanvasView extends Canvas {
 
         for (Vehicle v : simulation.getRoad().getVehicles()) {
 
-            double x = v.getPosition();
-            double y = 192;
+            double x = v.getX();
+            double y = v.getY();
+
+            switch (v.getDirection()) {
+                case EAST, WEST -> y = 192;
+                case NORTH -> x = 398;
+                case SOUTH -> x = 378;
+            }
+
+
 
             // sombra
             gc.setFill(Color.rgb(0, 0, 0, 0.25));
