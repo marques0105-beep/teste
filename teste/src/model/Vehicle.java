@@ -12,6 +12,11 @@ public class Vehicle {
         this.stopped = false;
     }
 
+    public void setSpeed(double speed) {
+        this.speed = speed;
+    }
+
+
     public void update(double dt) {
         if (!stopped) {
             position += speed * dt;
@@ -29,5 +34,8 @@ public class Vehicle {
     public double getPosition() {
         return position;
     }
+
+
 }
+
 
